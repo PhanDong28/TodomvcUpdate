@@ -12,7 +12,16 @@
         <div class="header text-[#EAD7D7] text-center text-8xl mb-[20px]">todos</div>
         <input id="input" class="todos items-center px-[60px] py-[16px] bg-[white] w-full shadow-xl outline-none box-border m-0 text-xl b-0 text-start" type="text" placeholder="What need to be done?"> 
         <ul id="list" class="bg-[white] text-xl text-gray-500"> 
-        </ul>
+        </ul> 
+       <div class="bg-white w-full px-[20px] py- grid grid-cols-[1fr_2fr_1fr] shadow-xl"> 
+        <p id="count" class="  items-center  w-full outline-none box-border m-0 text-xl b-0 text-start "></p>
+        <div class="flex justify-between border-b-[1px] border-solid border-gray-400 py-[16px] text-gray-600 text-sm" data-todo="filters">
+            <a href="#all" class="cursor-pointer checked">All</a>
+            <a href="#active" class="cursor-pointer">Active</a>
+            <a href="#completed" class="cursor-pointer">Completed</a>
+          </div>
+        </div>
+        </div>
     </body>
     <footer class="infor mt-[60px] text-[#9C9C9C] text-center text-[14px]">
         <p>Double-click to edid a todo</p>
