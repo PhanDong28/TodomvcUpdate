@@ -18,7 +18,7 @@ function createTodoItemEl({ value, id, completed }) {
   li.className = 'group border-b-[2px] border-solid px-[60px] py-[16px] bor-border float'; //Set the class name of the li element.
   li.innerHTML = `
     <i data-todo="completed" class="bx ${completed ? 'bx-check-square' : 'bx-square'} text-[30px] cursor-pointer"></i>
-    <span data-todo="value" contenteditable>${value}</span>                                                               //
+    <span data-todo="value" contenteditable>${value}</span>                                                               
     <i data-todo="remove" class="bx bx-x text-[30px] cursor-pointer invisible group-hover:visible float-right"></i>     
   `; 
   // Set the HTML content of the li element. This creates a list item with a checkbox, the Todo item value, and a delete button.
@@ -102,8 +102,9 @@ function App() {
   
 
   function updateCount() {
-    const count = todos.filter((todo) => !todo.completed).length;
-    countEl.textContent = `${count} item${count !== 1 ? 's' : ''} left`;
+    //Use the filter method to create a new array with all the incomplete todos.
+    const count = todos.filter((todo) => !todo.completed).length;  //Get the length of this new array and assign it to the count variable.
+    countEl.textContent = `${count} item${count !== 1 ? 's' : ''} left`; //Update the text content of the countEl element to display the count variable followed by the string "item" or "items" depending on whether count is equal to 1 or not.
     saveTodos();
   }
 
@@ -112,6 +113,24 @@ function App() {
       addTodo();
     }
   });
+
+  const getURLHash = () => document.location.hash.replace(/^#\//, ''); //This is a JavaScript function that retrieves the current URL hash value and removes the "#/" prefix if it exists
+
+  function renderTodos() {
+    const filter = getURLHash();
+    let filterTodos = [...todos];             // declares a variable filterTodos and initializes it to a copy of the todos array using the spread operator.
+    //check the value of the filter variable and filter the filterTodos array accordingly
+    if (filter === 'active') filterTodos = todos.filter((todo) => !todo.completed);        //If the filter is active, the filterTodos array is filtered to only include items that are not completed.
+    else if (filter === 'completed') filterTodos = todos.filter((todo) => todo.completed); //If the filter is completed, the filterTodos array is filtered to only include items that are completed.
+    listEl.replaceChildren(...filterTodos.map((todo) => createTodoItemEl(todo)));      //uses the replaceChildren() method to replace the current child nodes of the listEl element with new child nodes created from the filterTodos array,using the map() method, and passes each element to the createTodoItemEl() function to create a new todo item element.
+    document.querySelectorAll(`[data-todo="filters"] a`).forEach((el) => {  //selects all the a elements that are descendants of elements with a data-todo attribute value of filters
+      if (el.matches(`[href="#/${filter}"]`)) {
+        el.classList.add('checked');
+      } else {
+        el.classList.remove('checked');
+      }
+    });
+  }
 
   delegate(listEl, '[data-todo="remove"], [data-todo="completed"], [data-todo="value"]', 'click', (e, el) => {
     // Call the `completeTodoAndEdit()` function and pass in the event object and clicked element as arguments.
@@ -126,10 +145,15 @@ function App() {
   delegate(listEl, '[data-todo="value"]', 'keydown', (e, el) => {
     // Call the `completeTodoAndEdit()` function and pass in the event object and clicked element as arguments.
     completeTodoAndEdit(e, el);
+  }); 
+
+  window.addEventListener('hashchange', () => { // adds an event listener to the window object, listening for the 'hashchange' event
+  renderTodos();                                //When the hash of the URL changes, the renderTodos() function is called
   });
-  
+
 
   loadTodos();
+  renderTodos();
   }
   
   App();
